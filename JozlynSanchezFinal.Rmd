@@ -1,0 +1,251 @@
+---
+title: "Final R Markdown"
+author: "Jozlyn Sanchez"
+data: "5/13/26"
+output:   
+  html_document:
+    theme: yeti
+    code_folding: hide
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+# [**Marine Tagging in Clearwater, Florida**]{.underline}
+
+During 2025, I was able to embark on an amazing internship opportunity
+with Moore Marine College. During this experience, I was able to gain
+knowledge about the local communities of sharks and rays in the
+Clearwater, Florida area. Through marine anatomy courses, deep water
+boating experiences, and hands on marine life tagging, I was able to
+contribute to Moore Marine College's mission of continuous marine life
+tracking.
+
+## **Local Marine Life**
+
+Local communities of sharks and rays were our focus during this mission.
+Below I have listed all common species found in the Clearwater area as
+well as how many were tagged during the duration of my internship.
+
+[Sharks]{.underline}
+
+-   Bull Shark - 0
+-   Sandbar Shark - 2
+-   Nurse Shark - 5
+-   Blacktip Shark - 8
+-   Blacknose Shark - 11
+-   Great Hammerhead - 4
+
+[Rays]{.underline}
+
+-   Cownose Ray - 4
+
+-   Spotted Eagle Ray - 3
+
+-   Southern Ray - 11
+
+-   Butterfly Ray - 0
+
+![Southern Ray](images/IMG_7499-01.jpeg){width="539"}
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+wqp_data <- data.frame(
+  type = c(rep("Shark", 6), rep("Ray", 4)),
+  species = c("Bull Shark", "Sandbar Shark", "Nurse Shark", 
+              "Blacktip Shark", "Blacknose Shark", "Great Hammerhead",
+              "Cownose Ray", "Spotted Eagle Ray", "Southern Ray", "Butterfly Ray"),
+  count = c(0, 2, 5, 8, 11, 4, 4, 3, 11, 0)
+)
+
+print(wqp_data)
+
+ggplot(wqp_data, aes(x = reorder(species, count), y = count, fill = type)) +
+  geom_bar(stat = "identity", width = 0.7) +
+  coord_flip() +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
+  scale_fill_manual(values = c("Shark" = "skyblue", "Ray" = "grey")) +
+  labs(
+    title = "Marine Species Tagged During My 2025 Internship",
+    subtitle = "Reference: Local Marine Life",
+    x = NULL,
+    y = "Total Individuals Tagged",
+    fill = "Species"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(color = "gray3"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.y = element_blank(),
+    legend.position = "bottom"
+  )
+```
+
+## **Climate Change and Migration Abnormalities**
+
+Changes in climate, even to the lowest degree, are having a significant
+impact on marine life migration patterns. Since sharks and rays are
+cold-blooded, water temperature plays a key role in what species can do.
+When water temperature changes outside of abnormal zones, species cannot
+travel the distance they were once able to, must change their resting
+sea level location, and untimely migration. This data is also important
+to understand in relation to the Great Hammerhead population, whose body
+is extremely sensitive to any changes in temperature and water pressure.
+
+![Great Hammerhead
+Shark](images/20250613_003935_9164F4 2.jpeg){width="541"}
+
+![Blacktip Shark](images/20250613_003233_9226C2.jpeg){width="488"}
+
+## **Informative Migration Video**
+
+[How Does Climate Change Cause Marine Species To Migrate? - Earth
+Science Answers Video](https://youtu.be/5KxK4JR8JyE?si=PjdLRQajdD8x1vbI)
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+wqp_data <- data.frame(
+  year = seq(1955, 2023, by = 4),
+  ohc_change = c(-20, -15, -10, -5, 2, 10, 25, 45, 70, 105, 150, 210, 280, 360, 420, 480, 550, 620),
+  uncertainty = c(15, 14, 12, 11, 10, 9, 8, 8, 7, 7, 6, 6, 5, 5, 5, 5, 4, 4)
+)
+
+ggplot(wqp_data, aes(x = year, y = ohc_change)) +
+  geom_ribbon(aes(ymin = ohc_change - uncertainty, ymax = ohc_change + uncertainty), 
+              fill = "lightgrey", alpha = 0.4) +
+  geom_line(color = "skyblue4", linewidth = 1.2) +
+  geom_point(color = "skyblue4", size = 2) +
+  scale_y_continuous(labels = function(x) paste0(x, " ZJ")) +
+  labs(
+    title = "Annual Global Ocean Heat Content (0-2000m)",
+    subtitle = "Units in Zettajoules (ZJ)",
+    caption = "Data source: NOAA Climate.gov / NCEI",
+    x = "Year",
+    y = "Heat Content"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    panel.grid.minor = element_blank(),
+    axis.title = element_text(face = "bold")
+  )
+
+```
+
+Furthermore, these migration patterns changes are not only being noticed
+in Florida, but the rest of the world. According to NOAA FISHERIES'
+article *Sharks, Rays, and Climate Change: Impacts on Habitat, Prey
+Distribution, and Health,* these changes are being notices across the
+world with the Scalloped Hammerhead Shark population.
+
+```{r}
+
+wqp_data <- data.frame(
+  dps = c("Eastern Pacific", "Eastern Atlantic", "Central & SW Atlantic", 
+          "Indo-West Pacific", "NW Atlantic & Gulf of Mexico", "Central Pacific"),
+  status = c("Endangered", "Endangered", "Threatened", 
+             "Threatened", "Not Listed (MSA Managed)", "Not Listed (MSA Managed)"),
+  level = c(2, 2, 1, 1, 0, 0)
+)
+
+ggplot(wqp_data, aes(x = reorder(dps, level), y = level, fill = status)) +
+  geom_bar(stat = "identity", width = 0.6) +
+  coord_flip() +
+  scale_fill_manual(values = c(
+    "Endangered" = "orange", 
+    "Threatened" = "red3", 
+    "Not Listed (MSA Managed)" = "grey"
+  )) +
+  labs(
+    title = "Conservation Status of Scalloped Hammerhead DPS",
+    subtitle = "Data source: NOAA Fisheries (Endangered Species Act Listings)",
+    x = NULL,
+    y = "Protection Priority",
+    fill = "ESA Status"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.text.x = element_blank(),
+    legend.position = "bottom"
+  )
+```
+
+![Nurse Shark](images/Image.jpeg){width="554"}
+
+The NOAA also describes discrepancies found within the local populations
+of bull sharks due to warming waters. This data works to show how deep
+climate issues run and how no species is immune to our changing climate.
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+wqp_data <- data.frame(
+  region = c("Southern FL", "Central FL", "Northern FL/GA", "Carolinas"),
+  early_period = c(0.85, 0.45, 0.12, 0.02),
+  recent_period = c(0.88, 0.62, 0.35, 0.15)
+)
+
+wqp_long <- pivot_longer(
+  wqp_data, 
+  cols = ends_with("period"), 
+  names_to = "timeframe", 
+  values_to = "suitability"
+)
+
+wqp_long$region <- factor(wqp_long$region, levels = c("Carolinas", "Northern FL/GA", "Central FL", "Southern FL"))
+
+ggplot(wqp_long, aes(x = timeframe, y = region, fill = suitability)) +
+  geom_tile(color = "white", lwd = 1.5) +
+  scale_fill_gradient(low = "skyblue", high = "blue4") +
+  scale_x_discrete(labels = c("early_period" = "2003-2005", "recent_period" = "2018-2020")) +
+  labs(
+    title = "Northward Expansion of Suitable Shark Habitat",
+    subtitle = "Based on Habitat Suitability Index (HSI) shifts",
+    x = "Observation Period",
+    y = "Geographic Region",
+    fill = "Suitability Index"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    axis.text.y = element_text(face = "italic"),
+    panel.grid = element_blank()
+  )
+
+```
+
+## **Conclusion**
+
+In accordance with the data sets listed above, it is clear to see how
+impactful climate change is in the decline of nature migration patterns
+for sharks and rays. This is why research efforts such as the mission of
+the Moore Marine College are so beneficial to the continued research of
+climate effects on marine life.
+
+![Nurse Shark](images/IMG_6992-01.jpeg){width="517"}
+
+## **Sources**
+
+<https://www.fisheries.noaa.gov/feature-story/sharks-rays-and-climate-change-impacts-habitat-prey-distribution-and-health>
+
+<https://www.climate.gov/news-features/understanding-climate/climate-change-ocean-heat-content>
+
+<https://www.climatechange2013.org/images/report/WG1AR5_Chapter03_FINAL.pdf>
+
+<https://www.fisheries.noaa.gov/action/final-rule-list-giant-manta-ray-threatened-under-endangered-species-act>
+
+<https://www.fisheries.noaa.gov/action/listing-scalloped-hammerhead-shark-under-esa>
+
+<https://myfwc.com/research/saltwater/>
+
+<https://myfwc.com/research/saltwater/sharks-rays/>
